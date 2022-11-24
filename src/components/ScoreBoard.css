@@ -153,6 +153,12 @@ table thead {
   color: #000;
   background-color: #ffff4d;
 }
+
+.score-types-button-wide {
+  color: #000;
+  background-color: #ff534d;
+}
+
 .icon-button {
   padding: 0 4px !important;
 }

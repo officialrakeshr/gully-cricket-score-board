@@ -76,6 +76,7 @@ const HorizontalStepper = () => {
   const initialValues = {
     team1: '',
     team2: '',
+    teamSize:'',
     maxOver: '',
     batting: '',
   }
@@ -86,6 +87,7 @@ const HorizontalStepper = () => {
     }),
     Yup.object().shape({
       maxOver: Yup.string().required('Over is required'),
+      teamSize: Yup.string().required('Team Size is required'),
     }),
     Yup.object().shape({
       batting: Yup.string().required('Please choose who is Batting'),
@@ -168,12 +170,30 @@ const HorizontalStepper = () => {
                           <TextField
                             id='maxOver'
                             name='maxOver'
+                            type="number"
                             label='Overs*'
                             value={values.maxOver}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             helperText={errors.maxOver && touched.maxOver && errors.maxOver}
                             error={errors.maxOver && touched.maxOver}
+                            className={classes.textfieldWidth}
+                          />
+                        </div>
+                      </div>
+                      <div className={classes.formGroup} id='no-players'>
+                        <Typography className={classes.teamNameHeading}>Team Size?</Typography>
+                        <div className={classes.formGroup}>
+                          <TextField
+                            id='teamSize'
+                            name='teamSize'
+                            type="number"
+                            label='Team Size*'
+                            value={values.teamSize}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            helperText={errors.teamSize && touched.teamSize && errors.teamSize}
+                            error={errors.teamSize && touched.teamSize}
                             className={classes.textfieldWidth}
                           />
                         </div>

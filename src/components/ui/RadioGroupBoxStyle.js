@@ -3,7 +3,7 @@ export const radioGroupBoxstyle = {
   top: '61%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 340,
+  maxWidth: 500,
   bgcolor: 'background.paper',
   border: '2px solid #3f51b5',
   boxShadow: 24,

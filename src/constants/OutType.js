@@ -1,4 +1,4 @@
-export const BOLD = 'Bold'
+export const BOLD = 'Bowled'
 export const CATCH = 'Catch'
 export const STUMP = 'Stump'
 export const HIT_WICKET = 'Hit Wicket'
