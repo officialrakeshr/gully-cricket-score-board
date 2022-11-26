@@ -483,6 +483,53 @@ const ScoreBoard = () => {
     ]);
     setBatter2({});
   };
+  /**
+   * Run Out Batter Data
+   */
+   const newBatter1AfterRunOut = (value) => {
+    const batter1NameElement = document.getElementById("batter1Name");
+    batter1NameElement.value = "";
+    batter1NameElement.disabled = false;
+    const { id, name, run, ball, four, six, strikeRate, onStrike } = value;
+    setBatters((state) => [
+      ...state,
+      {
+        id,
+        name,
+        run,
+        ball,
+        four,
+        six,
+        strikeRate,
+        onStrike,
+        battingOrder: value.battingOrder,
+        battingStatus: OUT,
+      },
+    ]);
+    setBatter1({});
+  };
+  const newBatter2AfterRunOut = (value) => {
+    const batter2NameElement = document.getElementById("batter2Name");
+    batter2NameElement.value = "";
+    batter2NameElement.disabled = false;
+    const { id, name, run, ball, four, six, strikeRate, onStrike } = value;
+    setBatters((state) => [
+      ...state,
+      {
+        id,
+        name,
+        run,
+        ball,
+        four,
+        six,
+        strikeRate,
+        onStrike,
+        battingOrder: value.battingOrder,
+        battingStatus: OUT,
+      },
+    ]);
+    setBatter2({});
+  };
   const editBatter1Name = () => {
     if (
       overCount !== maxOver &&
@@ -1011,65 +1058,65 @@ const ScoreBoard = () => {
       }
     }
     if (isRunOut) {
+      let updatedBatter1={};
+      let updatedBatter2={};
       if (inningNo === 2) {
         setRemainingRuns(remainingRuns - runOutRuns);
       }
       setTotalRuns(totalRuns + runOutRuns);
       setRunsByOver(runsByOver + runOutRuns);
       if (batter1.onStrike) {
-        setBatter1((state) => {
-          let run = runOutRuns;
-          const updatedRun = state.run + runOutRuns;
-          const updatedBall = state.ball + 1;
-          const sr = Math.round((updatedRun / updatedBall) * 100 * 100) / 100;
-          let four = state.four;
-          if (run === 4) {
-            four = four + 1;
-          }
-          let six = state.six;
-          if (run === 6) {
-            six = six + 1;
-          }
-          return {
-            ...state,
-            run: updatedRun,
-            ball: updatedBall,
-            four: four,
-            six: six,
-            strikeRate: sr,
-          };
-        });
+        let run = runOutRuns;
+        const updatedRun = batter1.run + runOutRuns;
+        const updatedBall = batter1.ball + 1;
+        const sr = Math.round((updatedRun / updatedBall) * 100 * 100) / 100;
+        let four = batter1.four;
+        if (run === 4) {
+          four = four + 1;
+        }
+        let six = batter1.six;
+        if (run === 6) {
+          six = six + 1;
+        }
+        updatedBatter1 = {
+          ...batter1,
+          run: updatedRun,
+          ball: updatedBall,
+          four: four,
+          six: six,
+          strikeRate: sr,
+        }
+        setBatter1(updatedBatter1);
       }else if (batter2.onStrike) {
-        setBatter2((state) => {
-          let run = runOutRuns;
-          const updatedRun = state.run + runOutRuns;
-          const updatedBall = state.ball + 1;
-          const sr = Math.round((updatedRun / updatedBall) * 100 * 100) / 100;
-          let four = state.four;
-          if (run === 4) {
-            four = four + 1;
-          }
-          let six = state.six;
-          if (run === 6) {
-            six = six + 1;
-          }
-          return {
-            ...state,
-            run: updatedRun,
-            ball: updatedBall,
-            four: four,
-            six: six,
-            strikeRate: sr,
-          };
-        });
+        let run = runOutRuns;
+        const updatedRun = batter2.run + runOutRuns;
+        const updatedBall = batter2.ball + 1;
+        const sr = Math.round((updatedRun / updatedBall) * 100 * 100) / 100;
+        let four = batter2.four;
+        if (run === 4) {
+          four = four + 1;
+        }
+        let six = batter2.six;
+        if (run === 6) {
+          six = six + 1;
+        }
+        updatedBatter2 = {
+          ...batter2,
+          run: updatedRun,
+          ball: updatedBall,
+          four: four,
+          six: six,
+          strikeRate: sr,
+        };
+        setBatter2(updatedBatter2);
       }
 
       if (batter1.id === playerId) {
-        newBatter1();
+        newBatter1AfterRunOut(updatedBatter1);
         changeStrikeRadio("strike");
         switchBatterStrike("batter1");
       } else {
-        newBatter2();
+        newBatter2AfterRunOut(updatedBatter2);
         changeStrikeRadio("non-strike");
         switchBatterStrike("batter2");
       }
