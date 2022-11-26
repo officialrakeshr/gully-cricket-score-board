@@ -1022,10 +1022,16 @@ const ScoreBoard = () => {
         } else {
           setCurrentRunStack((state) => [...state, "wd"]);
         }
-      } else {
+      }
+       else {
         setTotalOvers(overCount + 1);
         const arr = [...currentRunStack];
-        arr.push("W");
+        if (isRunOut) {
+          arr.push("W"+runOutRuns);
+        } else {
+          arr.push("W");
+        }
+        
         overCompleted(runsByOver, arr);
         setWicketCount(wicketCount + 1);
         disableAllScoreButtons();
@@ -1034,7 +1040,7 @@ const ScoreBoard = () => {
       if (isNoBall) {
         removeNoBallEffect();
         if (isRunOut) {
-          setCurrentRunStack((state) => [...state, "nbW"]);
+          setCurrentRunStack((state) => [...state, "nbW"+runOutRuns]);
           setWicketCount(wicketCount + 1);
           disableAllScoreButtons();
         } else {
@@ -1043,7 +1049,7 @@ const ScoreBoard = () => {
       } else if (isWide) {
         removeWideEffect();
         if (isRunOut) {
-          setCurrentRunStack((state) => [...state, "wdW"]);
+          setCurrentRunStack((state) => [...state, "wdW"+runOutRuns]);
           setWicketCount(wicketCount + 1);
           disableAllScoreButtons();
         } else {
@@ -1051,7 +1057,9 @@ const ScoreBoard = () => {
         }
       } else {
         setBallCount(ballCount + 1);
-        setCurrentRunStack((state) => [...state, "W"]);
+        if(isRunOut){
+          setCurrentRunStack((state) => [...state, "W"+runOutRuns]);
+        }else setCurrentRunStack((state) => [...state, "W"]);
         setTotalOvers(Math.round((totalOvers + 0.1) * 10) / 10);
         setWicketCount(wicketCount + 1);
         disableAllScoreButtons();
