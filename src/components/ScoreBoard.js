@@ -741,6 +741,87 @@ const ScoreBoard = () => {
       }
     }
   };
+
+  const undoRunOut = (runI, isNoBallParam) => {
+    if (isNoBallParam) {
+      setTotalRuns(totalRuns - (runI + 1));
+      setRunsByOver(runsByOver - (runI + 1));
+    } else {
+      setTotalRuns(totalRuns - runI);
+      setRunsByOver(runsByOver - runI);
+      setBallCount(ballCount - 1);
+      setTotalOvers(Math.round((totalOvers - 0.1) * 10) / 10);
+    }
+    setWicketCount(wicketCount - 1);
+
+    const batter = batters[batters.length - 1];
+    const { id, name, run, ball, four, six, onStrike } = batter;
+
+    const updatedRun = run - runI;
+    const updatedBall = ball - 1;
+    const updatedSr = updatedRun / updatedBall;
+    const sr =
+      Math.round(isNaN(updatedSr) ? 0 : updatedSr * 100 * 100) / 100;
+    let _four = four;
+    if (runI === 4) {
+      _four = four - 1;
+    }
+    let _six = six;
+    if (runI === 6) {
+      _six = six - 1;
+    }
+
+    //
+    let temp =[{"type":"batter","order":batter.battingOrder},
+                {"type":"batter1","order":batter1.battingOrder ? batter1.battingOrder : 999},
+                {"type":"batter2","order":batter2.battingOrder ? batter2.battingOrder : 999}];
+    temp.sort(function(a, b){return a.order - b.order})
+    if(temp[2].type ==="batter1"){
+      const batter1NameElement = document.getElementById("batter1Name");
+      batter1NameElement.value = batter.name;
+      batter1NameElement.disabled = true;
+      setBatter1({
+        id,
+        name,
+        run:updatedRun,
+        ball:updatedBall,
+        four:_four,
+        six:_six,
+        strikeRate:sr,
+        onStrike,
+        battingOrder: batter.battingOrder,
+        battingStatus: BATTING,
+      });
+      if(batter.onStrike){
+        switchBatterStrike('batter1')
+        changeStrikeRadio('strike')
+      }
+    }
+    if(temp[2].type ==="batter2"){
+      const batter2NameElement = document.getElementById("batter2Name");
+      batter2NameElement.value = batter.name;
+      batter2NameElement.disabled = true;
+      setBatter2({
+        id,
+        name,
+        run:updatedRun,
+        ball:updatedBall,
+        four:_four,
+        six:_six,
+        strikeRate:sr,
+        onStrike,
+        battingOrder: batter.battingOrder,
+        battingStatus: BATTING,
+      });
+      if(batter.onStrike){
+        switchBatterStrike('batter2')
+        changeStrikeRadio('strike')
+      }
+    }
+    
+      
+  };
+
   const undoDelivery = () => {
     if (currentRunStack.length > 0) {
       const last = currentRunStack[currentRunStack.length - 1];
@@ -750,27 +831,49 @@ const ScoreBoard = () => {
       } else {
         currentRunStack.pop();
         setCurrentRunStack(currentRunStack);
-        if (last === "wd") {
-          setTotalRuns(totalRuns - 1);
-          setExtras((state) => ({
-            ...state,
-            total: state.total - 1,
-            wide: state.wide - 1,
-          }));
-        } else if (last === "W") {
+        if (last === "W") {
           undoWicket(false);
         } else {
+                  //wd1,nb1,wdW1,nbW2,W2
           const lastChar = last.substr(last.length - 1);
           const run = parseInt(lastChar);
-          if (isNaN(run)) {
-            setTotalRuns(totalRuns - 1);
-            setRunsByOver(runsByOver - 1);
-            if (last !== "nb") {
-              undoWicket(true);
+          const isRunOutRun=last.includes('wdW') || last.includes('nbW') || last.includes('W');
+          const isNb = last.includes('nb') && !last.includes('nbW');
+          const isWide = last.includes('wd') && !last.includes('wdW')
+          if(isRunOutRun){
+            let flag = last.includes('wdW') || last.includes('nbW');
+            undoRunOut(run,flag);
+            if(last.includes('wdW')){
+              setExtras((state) => ({
+                ...state,
+                total: state.total - 1,
+                wide: state.wide - 1,
+              }));
             }
-          } else {
-            undoRun(run, true);
+            if(last.includes('nbW')){
+              setExtras((state) => ({
+                ...state,
+                total: state.total - 1,
+                noBall: state.noBall - 1,
+              }));
+            }
           }
+          else if(isNb || isWide){
+            undoRun(run, true);
+           if(isWide){
+            setExtras((state) => ({
+              ...state,
+              total: state.total - 1,
+              wide: state.wide - 1,
+            }));
+           }else{
+            setExtras((state) => ({
+              ...state,
+              total: state.total - 1,
+              noBall: state.noBall - 1,
+            }));
+           }
+          }        
         }
       }
     }
